@@ -12,8 +12,9 @@ import Input from "@/components/atoms/Input";
 export default function Contacts() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [formData, setFormData] = useState({
+const [showModal, setShowModal] = useState(false)
+  const [editingContact, setEditingContact] = useState(null)
+const [formData, setFormData] = useState({
     companyName: '',
     contactPerson: '',
     email: '',
@@ -23,21 +24,51 @@ export default function Contacts() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Check URL parameter to auto-open modal
+// Check URL parameters to auto-open modal
   useEffect(() => {
-    if (searchParams.get('showCreateModal') === 'true') {
-      setShowCreateModal(true)
+    const showCreate = searchParams.get('showCreateModal') === 'true'
+    const editId = searchParams.get('edit')
+    
+    if (showCreate) {
+      setShowModal(true)
+      setEditingContact(null)
       // Clean up URL parameter
       searchParams.delete('showCreateModal')
       setSearchParams(searchParams, { replace: true })
+    } else if (editId) {
+      // Load contact for editing
+      const loadContact = async () => {
+        try {
+          const contact = await contactService.getById(parseInt(editId))
+          if (contact) {
+            setEditingContact(contact)
+            setFormData({
+              companyName: contact.companyName || '',
+              contactPerson: contact.contactPerson || '',
+              email: contact.email || '',
+              phone: contact.phone || '',
+              industry: contact.industry || '',
+              companySize: contact.companySize || ''
+            })
+            setShowModal(true)
+          }
+        } catch (error) {
+          console.error('Failed to load contact:', error)
+          toast.error('Failed to load contact for editing')
+        }
+      }
+      loadContact()
+      
+      // Clean up URL parameter
+      searchParams.delete('edit')
+      setSearchParams(searchParams, { replace: true })
     }
   }, [searchParams, setSearchParams])
-
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault()
     
     // Basic validation
@@ -48,13 +79,21 @@ export default function Contacts() {
 
     setIsSubmitting(true)
     try {
-      await contactService.create({
-        ...formData,
-        lastActivity: new Date().toISOString()
-      })
+      if (editingContact) {
+        await contactService.update(editingContact.id, {
+          ...formData,
+          lastActivity: new Date().toISOString()
+        })
+        toast.success('Contact updated successfully')
+      } else {
+        await contactService.create({
+          ...formData,
+          lastActivity: new Date().toISOString()
+        })
+        toast.success('Contact created successfully')
+      }
       
-      toast.success('Contact created successfully')
-      setShowCreateModal(false)
+      setShowModal(false)
       setFormData({
         companyName: '',
         contactPerson: '',
@@ -65,16 +104,19 @@ export default function Contacts() {
       })
       
       // Trigger refresh of contacts table
-      window.dispatchEvent(new CustomEvent('contactsUpdated'))
+      if (typeof window !== 'undefined' && window.CustomEvent) {
+        window.dispatchEvent(new window.CustomEvent('contactsUpdated'))
+      }
     } catch (error) {
-      toast.error('Failed to create contact')
+      toast.error(editingContact ? 'Failed to update contact' : 'Failed to create contact')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleCloseModal = () => {
-    setShowCreateModal(false)
+const handleCloseModal = () => {
+    setShowModal(false)
+    setEditingContact(null)
     setFormData({
       companyName: '',
       contactPerson: '',
@@ -95,7 +137,7 @@ export default function Contacts() {
             <p className="text-surface-600">Manage your business contacts and relationships</p>
           </div>
           <Button 
-            onClick={() => setShowCreateModal(true)}
+onClick={() => setShowModal(true)}
             icon="Plus"
             className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
           >
@@ -109,11 +151,11 @@ export default function Contacts() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <ContactsTable />
+<ContactsTable />
         </motion.div>
 
-        {/* Create Contact Modal */}
-        {showCreateModal && (
+{/* Create Contact Modal */}
+        {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -123,7 +165,9 @@ export default function Contacts() {
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-surface-900">Create New Contact</h2>
+<h2 className="text-xl font-semibold text-surface-900">
+                    {editingContact ? 'Edit Contact' : 'Create New Contact'}
+                  </h2>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -227,17 +271,17 @@ export default function Contacts() {
                       Cancel
                     </Button>
                     <Button
-                      type="submit"
+type="submit"
                       disabled={isSubmitting}
                       className="flex-1 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
                     >
                       {isSubmitting ? (
                         <>
                           <ApperIcon name="Loader2" className="w-4 h-4 animate-spin mr-2" />
-                          Creating...
+                          {editingContact ? 'Updating...' : 'Creating...'}
                         </>
                       ) : (
-                        'Create Contact'
+                        editingContact ? 'Update Contact' : 'Create Contact'
                       )}
                     </Button>
                   </div>

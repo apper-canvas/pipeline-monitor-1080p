@@ -1,18 +1,21 @@
-import { useState, useEffect, useMemo } from 'react'
-import { motion } from 'framer-motion'
-import { formatDistanceToNow } from 'date-fns'
-import SearchBar from '@/components/molecules/SearchBar'
-import Badge from '@/components/atoms/Badge'
-import Button from '@/components/atoms/Button'
-import Loading from '@/components/ui/Loading'
-import ErrorView from '@/components/ui/ErrorView'
-import Empty from '@/components/ui/Empty'
-import ApperIcon from '@/components/ApperIcon'
-import contactService from '@/services/api/contactService'
-import dealService from '@/services/api/dealService'
-import { toast } from 'react-toastify'
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { formatDistanceToNow } from "date-fns";
+import { toast } from "react-toastify";
+import dealService from "@/services/api/dealService";
+import contactService from "@/services/api/contactService";
+import ApperIcon from "@/components/ApperIcon";
+import SearchBar from "@/components/molecules/SearchBar";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import ErrorView from "@/components/ui/ErrorView";
+import Pipeline from "@/components/pages/Pipeline";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
 
 export default function ContactsTable() {
+  const navigate = useNavigate();
   const [contacts, setContacts] = useState([])
   const [deals, setDeals] = useState([])
   const [loading, setLoading] = useState(true)
@@ -303,10 +306,11 @@ export default function ContactsTable() {
                           icon="Eye"
                           onClick={() => setSelectedContact(contact)}
                         />
-                        <Button
+<Button
                           variant="ghost"
                           size="sm"
                           icon="Edit"
+                          onClick={() => navigate(`/contacts?edit=${contact.Id}`)}
                         />
                         <Button
                           variant="ghost"
