@@ -13,6 +13,7 @@ export default function Layout() {
     { name: 'Contacts', path: '/contacts', icon: 'Users' },
     { name: 'Pipeline', path: '/pipeline', icon: 'GitBranch' },
     { name: 'Activities', path: '/activities', icon: 'Clock' },
+{ name: 'Tasks', path: '/tasks', icon: 'CheckSquare' }
   ]
 
   const handleQuickAdd = () => {
@@ -25,8 +26,13 @@ export default function Layout() {
   }
 
   const handleQuickAddDeal = () => {
-    setShowQuickAddModal(false)
+setShowQuickAddModal(false)
     navigate('/pipeline')
+  }
+
+  const handleQuickAddTask = () => {
+    setShowQuickAddModal(false)
+    navigate('/tasks')
   }
 
   return (
@@ -171,7 +177,7 @@ export default function Layout() {
                     </div>
                   </button>
 
-                  <button
+<button
                     onClick={handleQuickAddDeal}
                     className="flex flex-col items-center space-y-3 p-6 rounded-xl border border-surface-200 hover:border-accent-300 hover:bg-gradient-to-br hover:from-accent-50 hover:to-primary-50 transition-all duration-200 group"
                   >
@@ -181,6 +187,20 @@ export default function Layout() {
                     <div>
                       <div className="font-medium text-surface-900">Deal</div>
                       <div className="text-xs text-surface-600">Create new deal</div>
+                    </div>
+                  </button>
+
+                  {/* Quick Add Task */}
+                  <button
+                    onClick={handleQuickAddTask}
+                    className="flex flex-col items-center space-y-3 p-6 rounded-xl border border-surface-200 hover:border-purple-300 hover:bg-gradient-to-br hover:from-purple-50 hover:to-primary-50 transition-all duration-200 group"
+                  >
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 group-hover:from-purple-200 group-hover:to-purple-300 rounded-xl flex items-center justify-center transition-colors">
+                      <ApperIcon name="CheckSquare" className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <div className="font-medium text-surface-900">Task</div>
+                      <div className="text-xs text-surface-600">Create new task</div>
                     </div>
                   </button>
                 </div>

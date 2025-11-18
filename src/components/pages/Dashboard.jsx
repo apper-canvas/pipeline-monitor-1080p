@@ -1,9 +1,13 @@
-import { motion } from 'framer-motion'
-import DashboardMetrics from '@/components/organisms/DashboardMetrics'
-import RecentActivities from '@/components/organisms/RecentActivities'
-import TopOpportunities from '@/components/organisms/TopOpportunities'
+import { motion } from "framer-motion";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import ApperIcon from "@/components/ApperIcon";
+import RecentActivities from "@/components/organisms/RecentActivities";
+import TopOpportunities from "@/components/organisms/TopOpportunities";
+import DashboardMetrics from "@/components/organisms/DashboardMetrics";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -110,8 +114,19 @@ export default function Dashboard() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </motion.svg>
-              </div>
+</div>
               <span className="font-medium text-surface-900">Log Activity</span>
+            </button>
+
+            {/* Tasks Quick Action */}
+            <button
+              onClick={() => navigate('/tasks')}
+              className="flex flex-col items-center space-y-3 p-6 rounded-xl border border-surface-200 hover:border-primary-300 hover:bg-gradient-to-br hover:from-primary-50 hover:to-accent-50 transition-all duration-200 group"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 group-hover:from-purple-200 group-hover:to-purple-300 rounded-xl flex items-center justify-center transition-colors">
+                <ApperIcon name="CheckSquare" className="w-6 h-6 text-purple-600" />
+              </div>
+              <span className="font-medium text-surface-900">Manage Tasks</span>
             </button>
 
             <button className="flex items-center justify-center space-x-3 p-6 rounded-xl border border-surface-200 hover:border-purple-300 hover:bg-gradient-to-br hover:from-purple-50 hover:to-primary-50 transition-all duration-200 group">

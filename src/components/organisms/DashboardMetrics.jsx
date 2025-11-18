@@ -4,9 +4,11 @@ import MetricCard from '@/components/molecules/MetricCard'
 import Loading from '@/components/ui/Loading'
 import ErrorView from '@/components/ui/ErrorView'
 import dealService from '@/services/api/dealService'
+import activityService from '@/services/api/activityService'
 
 export default function DashboardMetrics() {
   const [metrics, setMetrics] = useState(null)
+  const [taskMetrics, setTaskMetrics] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -14,8 +16,12 @@ export default function DashboardMetrics() {
     try {
       setLoading(true)
       setError(null)
-      const data = await dealService.getPipelineMetrics()
-      setMetrics(data)
+      const [dealData, taskData] = await Promise.all([
+        dealService.getPipelineMetrics(),
+        activityService.getTaskMetrics()
+      ])
+      setMetrics(dealData)
+      setTaskMetrics(taskData)
     } catch (err) {
       setError(err.message || "Failed to load metrics")
     } finally {
@@ -68,20 +74,20 @@ export default function DashboardMetrics() {
       gradient: "from-accent-500 to-accent-600"
     },
     {
-      title: "Won This Month",
-      value: formatCurrency(metrics.closedWonValue),
-      change: 24,
-      changeType: "positive",
-      icon: "Trophy",
-      gradient: "from-green-500 to-green-600"
+      title: "Task Completion",
+      value: `${taskMetrics.completionRate}%`,
+      change: taskMetrics.completionRate > 75 ? 15 : taskMetrics.completionRate > 50 ? 5 : -10,
+      changeType: taskMetrics.completionRate > 75 ? "positive" : taskMetrics.completionRate > 50 ? "neutral" : "negative",
+      icon: "CheckSquare",
+      gradient: "from-purple-500 to-purple-600"
     },
     {
-      title: "Conversion Rate",
-      value: `${metrics.conversionRate}%`,
-      change: 3,
-      changeType: "positive",
-      icon: "TrendingUp",
-      gradient: "from-purple-500 to-purple-600"
+      title: "Overdue Tasks",
+      value: taskMetrics.overdue.toString(),
+      change: taskMetrics.overdue > 0 ? -20 : 0,
+      changeType: taskMetrics.overdue > 0 ? "negative" : "positive",
+      icon: "Clock",
+      gradient: "from-orange-500 to-red-600"
     }
   ]
 

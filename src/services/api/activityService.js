@@ -3,7 +3,9 @@ import activitiesData from '@/services/mockData/activities.json'
 class ActivityService {
   constructor() {
     this.activities = [...activitiesData]
-    this.activityTypes = ['Email', 'Call', 'Meeting', 'Note', 'Task']
+this.activityTypes = ['Email', 'Call', 'Meeting', 'Note', 'Task']
+    this.taskStatuses = ['Pending', 'In Progress', 'Completed', 'Overdue']
+    this.taskPriorities = ['Low', 'Medium', 'High']
   }
 
   async delay(ms = 300) {
@@ -21,18 +23,32 @@ class ActivityService {
     return activity ? { ...activity } : null
   }
 
-  async create(activityData) {
+async create(activityData) {
     await this.delay(400)
     const newActivity = {
       ...activityData,
       Id: Math.max(...this.activities.map(a => a.Id)) + 1,
       timestamp: new Date().toISOString()
     }
+    
+    // Handle task-specific fields
+    if (activityData.type === 'Task') {
+      newActivity.status = activityData.status || 'Pending'
+      newActivity.priority = activityData.priority || 'Medium'
+      newActivity.assignedTo = activityData.assignedTo || null
+      newActivity.dueDate = activityData.dueDate || null
+      
+      // Auto-set overdue status if due date has passed
+      if (newActivity.dueDate && new Date(newActivity.dueDate) < new Date()) {
+        newActivity.status = 'Overdue'
+      }
+    }
+    
     this.activities.push(newActivity)
     return { ...newActivity }
   }
 
-  async update(id, activityData) {
+async update(id, activityData) {
     await this.delay(300)
     const index = this.activities.findIndex(a => a.Id === parseInt(id))
     if (index === -1) return null
@@ -42,7 +58,49 @@ class ActivityService {
       ...activityData,
       Id: parseInt(id)
     }
+    
+    // Handle task status updates
+    if (this.activities[index].type === 'Task' && activityData.dueDate) {
+      if (new Date(activityData.dueDate) < new Date() && activityData.status !== 'Completed') {
+        this.activities[index].status = 'Overdue'
+      }
+    }
+    
     return { ...this.activities[index] }
+  }
+  
+  async getTasksByStatus(status) {
+    await this.delay(200)
+    return this.activities.filter(a => a.type === 'Task' && a.status === status)
+  }
+  
+  async getOverdueTasks() {
+    await this.delay(200)
+    const now = new Date()
+    return this.activities.filter(a => 
+      a.type === 'Task' && 
+      a.dueDate && 
+      new Date(a.dueDate) < now && 
+      a.status !== 'Completed'
+    )
+  }
+  
+  async getTaskMetrics() {
+    await this.delay(200)
+    const tasks = this.activities.filter(a => a.type === 'Task')
+    const completed = tasks.filter(t => t.status === 'Completed')
+    const overdue = tasks.filter(t => t.status === 'Overdue')
+    const pending = tasks.filter(t => t.status === 'Pending')
+    const inProgress = tasks.filter(t => t.status === 'In Progress')
+    
+    return {
+      total: tasks.length,
+      completed: completed.length,
+      overdue: overdue.length,
+      pending: pending.length,
+      inProgress: inProgress.length,
+      completionRate: tasks.length > 0 ? Math.round((completed.length / tasks.length) * 100) : 0
+    }
   }
 
   async delete(id) {

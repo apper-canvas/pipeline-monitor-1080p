@@ -1,15 +1,15 @@
-import { useState, useEffect, useMemo } from 'react'
-import { motion } from 'framer-motion'
-import { formatDistanceToNow, format } from 'date-fns'
-import ActivityIcon from '@/components/molecules/ActivityIcon'
-import SearchBar from '@/components/molecules/SearchBar'
-import Badge from '@/components/atoms/Badge'
-import Loading from '@/components/ui/Loading'
-import ErrorView from '@/components/ui/ErrorView'
-import Empty from '@/components/ui/Empty'
-import activityService from '@/services/api/activityService'
-import contactService from '@/services/api/contactService'
-import dealService from '@/services/api/dealService'
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { format, formatDistanceToNow } from "date-fns";
+import dealService from "@/services/api/dealService";
+import activityService from "@/services/api/activityService";
+import contactService from "@/services/api/contactService";
+import ActivityIcon from "@/components/molecules/ActivityIcon";
+import SearchBar from "@/components/molecules/SearchBar";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import ErrorView from "@/components/ui/ErrorView";
+import Badge from "@/components/atoms/Badge";
 
 export default function ActivitiesTimeline() {
   const [activities, setActivities] = useState([])
@@ -137,7 +137,8 @@ export default function ActivitiesTimeline() {
   }, [filteredActivities])
 
   // Filter options
-  const activityTypes = [...new Set(activities.map(a => a.type))]
+const activityTypes = [...new Set(activities.map(a => a.type))]
+  const taskStatuses = [...new Set(activities.filter(a => a.type === 'Task').map(a => a.status))]
   const uniqueContacts = [...new Set(activities.map(a => a.contactId))]
     .map(id => contacts[id])
     .filter(Boolean)
@@ -152,6 +153,15 @@ export default function ActivitiesTimeline() {
         label: type
       }))
     },
+...(taskStatuses.length > 0 ? [{
+      key: "status",
+      label: "Task Status", 
+      value: filters.status,
+      options: taskStatuses.map(status => ({
+        value: status,
+        label: status
+      }))
+    }] : []),
     {
       key: "dateRange",
       label: "Date Range", 
@@ -262,7 +272,7 @@ export default function ActivitiesTimeline() {
                               {/* Header */}
                               <div className="flex items-start justify-between">
                                 <div className="flex-1">
-                                  <h4 className="font-medium text-surface-900 mb-1">
+<h4 className="font-medium text-surface-900 mb-1">
                                     {activity.description}
                                   </h4>
                                   <div className="flex items-center space-x-2 text-sm text-surface-600">
@@ -280,11 +290,43 @@ export default function ActivitiesTimeline() {
                                   <Badge variant="secondary" size="sm">
                                     {activity.type}
                                   </Badge>
+                                  {activity.type === 'Task' && activity.status && (
+                                    <Badge 
+                                      variant={
+                                        activity.status === 'Completed' ? 'success' :
+                                        activity.status === 'Overdue' ? 'destructive' :
+                                        activity.status === 'In Progress' ? 'default' : 'secondary'
+                                      } 
+                                      size="sm"
+                                    >
+                                      {activity.status}
+                                    </Badge>
+                                  )}
+                                  {activity.type === 'Task' && activity.priority && (
+                                    <Badge 
+                                      variant={
+                                        activity.priority === 'High' ? 'destructive' :
+                                        activity.priority === 'Medium' ? 'default' : 'secondary'
+                                      } 
+                                      size="sm"
+                                    >
+                                      {activity.priority}
+                                    </Badge>
+                                  )}
                                   <span className="text-xs text-surface-500">
                                     {format(new Date(activity.timestamp), 'h:mm a')}
                                   </span>
                                 </div>
                               </div>
+
+                              {/* Task Due Date */}
+                              {activity.type === 'Task' && activity.dueDate && (
+                                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200/50">
+                                  <p className="text-sm text-blue-700">
+                                    <strong>Due:</strong> {format(new Date(activity.dueDate), 'MMM d, yyyy h:mm a')}
+                                  </p>
+                                </div>
+                              )}
 
                               {/* Outcome */}
                               {activity.outcome && (

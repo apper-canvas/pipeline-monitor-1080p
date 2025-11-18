@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { formatDistanceToNow } from 'date-fns'
-import ActivityIcon from '@/components/molecules/ActivityIcon'
-import Loading from '@/components/ui/Loading'
-import ErrorView from '@/components/ui/ErrorView'
-import Empty from '@/components/ui/Empty'
-import ApperIcon from '@/components/ApperIcon'
-import activityService from '@/services/api/activityService'
-import contactService from '@/services/api/contactService'
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { formatDistanceToNow, format } from "date-fns";
+import activityService from "@/services/api/activityService";
+import contactService from "@/services/api/contactService";
+import ApperIcon from "@/components/ApperIcon";
+import ActivityIcon from "@/components/molecules/ActivityIcon";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import ErrorView from "@/components/ui/ErrorView";
+import Activities from "@/components/pages/Activities";
 
 export default function RecentActivities({ limit = 8 }) {
   const [activities, setActivities] = useState([])
@@ -117,7 +118,7 @@ export default function RecentActivities({ limit = 8 }) {
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between">
-                  <div className="flex-1">
+<div className="flex-1">
                     <p className="text-sm font-medium text-surface-900 group-hover:text-primary-900 transition-colors">
                       {activity.description}
                     </p>
@@ -129,10 +130,28 @@ export default function RecentActivities({ limit = 8 }) {
                       <span className="text-xs text-surface-500">
                         {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
                       </span>
+                      {activity.type === 'Task' && activity.status && (
+                        <>
+                          <span className="text-surface-400">•</span>
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                            activity.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                            activity.status === 'Overdue' ? 'bg-red-100 text-red-700' :
+                            activity.status === 'In Progress' ? 'bg-blue-100 text-blue-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {activity.status}
+                          </span>
+                        </>
+                      )}
                     </div>
                     {activity.outcome && (
                       <p className="text-xs text-surface-500 mt-1 line-clamp-2">
                         {activity.outcome}
+                      </p>
+                    )}
+                    {activity.type === 'Task' && activity.dueDate && (
+                      <p className="text-xs text-surface-500 mt-1">
+                        Due: {format(new Date(activity.dueDate), 'MMM d, yyyy h:mm a')}
                       </p>
                     )}
                   </div>

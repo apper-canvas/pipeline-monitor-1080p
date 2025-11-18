@@ -13,9 +13,10 @@ export default function Activities() {
           className="space-y-2"
         >
           <h1 className="text-3xl font-bold bg-gradient-to-r from-surface-900 via-primary-800 to-primary-900 bg-clip-text text-transparent">
-            Activities
+Activities & Tasks
           </h1>
           <p className="text-surface-600 text-lg">
+            Track interactions and manage follow-up tasks
             Track all interactions with your contacts and monitor your sales activities.
           </p>
         </motion.div>
