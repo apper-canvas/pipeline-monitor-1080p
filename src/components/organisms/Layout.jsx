@@ -25,14 +25,14 @@ const handleQuickAddContact = () => {
     navigate('/contacts?showCreateModal=true')
   }
 
-  const handleQuickAddDeal = () => {
-setShowQuickAddModal(false)
-    navigate('/pipeline')
+const handleQuickAddDeal = () => {
+    setShowQuickAddModal(false)
+    navigate('/pipeline', { state: { openCreateModal: true } })
   }
 
-  const handleQuickAddTask = () => {
+const handleQuickAddTask = () => {
     setShowQuickAddModal(false)
-    navigate('/tasks')
+    navigate('/tasks', { state: { openCreateModal: true } })
   }
 
   return (

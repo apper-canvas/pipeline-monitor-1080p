@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { format, formatDistanceToNow, isAfter, isBefore, startOfDay } from 'date-fns'
 import { toast } from 'react-toastify'
@@ -17,6 +17,7 @@ import dealService from '@/services/api/dealService'
 
 export default function TaskManagement() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [tasks, setTasks] = useState([])
   const [contacts, setContacts] = useState({})
   const [deals, setDeals] = useState({})
@@ -72,9 +73,17 @@ export default function TaskManagement() {
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
     loadData()
   }, [])
+
+  useEffect(() => {
+    if (location.state?.openCreateModal) {
+      setShowCreateModal(true)
+      // Clear the state to prevent modal from reopening on refresh
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state])
 
   const handleCreateTask = async (e) => {
     e.preventDefault()
