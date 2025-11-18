@@ -31,9 +31,14 @@ const handleQuickAddDeal = () => {
   }
 
 const handleQuickAddTask = () => {
-    setShowQuickAddModal(false)
-    navigate('/tasks', { state: { openCreateModal: true } })
-  }
+setShowQuickAddModal(false)
+  navigate('/tasks', { state: { openCreateModal: true } })
+}
+
+const handleQuickAddActivity = () => {
+  setShowQuickAddModal(false)
+  navigate('/activities', { state: { openCreateModal: true } })
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-surface-50 via-white to-primary-50">
@@ -190,19 +195,33 @@ const handleQuickAddTask = () => {
                     </div>
                   </button>
 
-                  {/* Quick Add Task */}
-                  <button
-                    onClick={handleQuickAddTask}
-                    className="flex flex-col items-center space-y-3 p-6 rounded-xl border border-surface-200 hover:border-purple-300 hover:bg-gradient-to-br hover:from-purple-50 hover:to-primary-50 transition-all duration-200 group"
-                  >
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 group-hover:from-purple-200 group-hover:to-purple-300 rounded-xl flex items-center justify-center transition-colors">
-                      <ApperIcon name="CheckSquare" className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-surface-900">Task</div>
-                      <div className="text-xs text-surface-600">Create new task</div>
-                    </div>
-                  </button>
+{/* Quick Add Task */}
+                <button
+                  onClick={handleQuickAddTask}
+                  className="flex flex-col items-center space-y-3 p-6 rounded-xl border border-surface-200 hover:border-purple-300 hover:bg-gradient-to-br hover:from-purple-50 hover:to-primary-50 transition-all duration-200 group"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 group-hover:from-purple-200 group-hover:to-purple-300 rounded-xl flex items-center justify-center transition-colors">
+                    <ApperIcon name="CheckSquare" className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-surface-900">Task</div>
+                    <div className="text-xs text-surface-600">Create new task</div>
+                  </div>
+                </button>
+
+                {/* Quick Add Activity */}
+                <button
+                  onClick={handleQuickAddActivity}
+                  className="flex flex-col items-center space-y-3 p-6 rounded-xl border border-surface-200 hover:border-green-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-primary-50 transition-all duration-200 group"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 group-hover:from-green-200 group-hover:to-green-300 rounded-xl flex items-center justify-center transition-colors">
+                    <ApperIcon name="Activity" className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-surface-900">Activity</div>
+                    <div className="text-xs text-surface-600">Log new activity</div>
+                  </div>
+                </button>
                 </div>
 
                 <button
