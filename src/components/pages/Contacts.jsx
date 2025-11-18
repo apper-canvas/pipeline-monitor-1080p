@@ -136,13 +136,6 @@ const handleCloseModal = () => {
             <h1 className="text-3xl font-bold text-surface-900 mb-2">Contacts</h1>
             <p className="text-surface-600">Manage your business contacts and relationships</p>
           </div>
-          <Button 
-onClick={() => setShowModal(true)}
-            icon="Plus"
-            className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800"
-          >
-            Add Contact
-          </Button>
         </div>
 
         {/* Contacts Table */}

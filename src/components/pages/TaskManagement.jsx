@@ -180,13 +180,6 @@ useEffect(() => {
             Create, assign, and track follow-up activities
           </p>
         </div>
-        <Button
-          onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center space-x-2"
-        >
-          <ApperIcon name="Plus" size={16} />
-          <span>New Task</span>
-        </Button>
       </div>
 
       {/* Filters */}

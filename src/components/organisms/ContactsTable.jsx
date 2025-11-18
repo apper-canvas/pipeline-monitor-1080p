@@ -199,9 +199,6 @@ export default function ContactsTable() {
           Showing {filteredContacts.length} of {contacts.length} contacts
         </p>
         
-        <Button size="sm" icon="Plus">
-          Add Contact
-        </Button>
       </div>
 
       {/* Contacts Table */}
