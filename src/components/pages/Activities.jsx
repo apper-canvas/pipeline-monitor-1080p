@@ -4,22 +4,27 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import ActivitiesTimeline from '@/components/organisms/ActivitiesTimeline'
 import activityService from '@/services/api/activityService'
+import contactService from '@/services/api/contactService'
+import dealService from '@/services/api/dealService'
 import ApperIcon from '@/components/ApperIcon'
 import Button from '@/components/atoms/Button'
 import Input from '@/components/atoms/Input'
 import Label from '@/components/atoms/Label'
-
 export default function Activities() {
   const location = useLocation()
   const navigate = useNavigate()
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [loading, setLoading] = useState(false)
+const [contacts, setContacts] = useState([])
+  const [deals, setDeals] = useState([])
+  const [contactsLoading, setContactsLoading] = useState(false)
+  const [dealsLoading, setDealsLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     type: 'call',
     description: '',
-    contactName: '',
-    dealName: '',
+    contactId: '',
+    dealId: '',
     scheduledFor: ''
   })
 
@@ -31,6 +36,32 @@ export default function Activities() {
     }
   }, [location.state, navigate, location.pathname])
 
+const loadContacts = async () => {
+    setContactsLoading(true)
+    try {
+      const contactsData = await contactService.getAll()
+      setContacts(contactsData || [])
+    } catch (error) {
+      console.error('Failed to load contacts:', error)
+      setContacts([])
+    } finally {
+      setContactsLoading(false)
+    }
+  }
+
+  const loadDeals = async () => {
+    setDealsLoading(true)
+    try {
+      const dealsData = await dealService.getAll()
+      setDeals(dealsData || [])
+    } catch (error) {
+      console.error('Failed to load deals:', error)
+      setDeals([])
+    } finally {
+      setDealsLoading(false)
+    }
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -39,7 +70,7 @@ export default function Activities() {
     }))
   }
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
 
@@ -53,8 +84,8 @@ export default function Activities() {
         title: formData.title.trim(),
         type: formData.type,
         description: formData.description.trim(),
-        contactName: formData.contactName.trim(),
-        dealName: formData.dealName.trim(),
+        contactId: formData.contactId ? parseInt(formData.contactId) : null,
+        dealId: formData.dealId ? parseInt(formData.dealId) : null,
         scheduledFor: formData.scheduledFor || new Date().toISOString(),
         status: 'pending',
         createdAt: new Date().toISOString()
@@ -68,8 +99,8 @@ export default function Activities() {
         title: '',
         type: 'call',
         description: '',
-        contactName: '',
-        dealName: '',
+        contactId: '',
+        dealId: '',
         scheduledFor: ''
       })
       setShowCreateModal(false)
@@ -82,6 +113,14 @@ export default function Activities() {
       setLoading(false)
     }
   }
+
+  // Load contacts and deals when modal opens
+  useEffect(() => {
+    if (showCreateModal) {
+      loadContacts()
+      loadDeals()
+    }
+  }, [showCreateModal])
 
   return (
     <div className="min-h-screen p-6">
@@ -114,12 +153,12 @@ Activities & Tasks
 
       {/* Create Activity Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white rounded-xl shadow-modal max-w-md w-full mx-4"
+            className="bg-white rounded-xl shadow-modal w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto"
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -163,28 +202,50 @@ Activities & Tasks
                   </select>
                 </div>
 
-                <div>
-                  <Label htmlFor="contactName">Contact Name</Label>
-                  <Input
-                    id="contactName"
-                    name="contactName"
-                    type="text"
-                    value={formData.contactName}
+<div>
+                  <Label htmlFor="contactId">Contact</Label>
+                  <select
+                    id="contactId"
+                    name="contactId"
+                    value={formData.contactId}
                     onChange={handleInputChange}
-                    placeholder="Associated contact"
-                  />
+                    className="input-field"
+                    disabled={contactsLoading}
+                  >
+                    <option value="">Select a contact</option>
+                    {contactsLoading ? (
+                      <option disabled>Loading contacts...</option>
+                    ) : (
+                      contacts.map(contact => (
+                        <option key={contact.Id} value={contact.Id}>
+                          {contact.contactPerson} - {contact.companyName}
+                        </option>
+                      ))
+                    )}
+                  </select>
                 </div>
 
                 <div>
-                  <Label htmlFor="dealName">Deal Name</Label>
-                  <Input
-                    id="dealName"
-                    name="dealName"
-                    type="text"
-                    value={formData.dealName}
+                  <Label htmlFor="dealId">Deal</Label>
+                  <select
+                    id="dealId"
+                    name="dealId"
+                    value={formData.dealId}
                     onChange={handleInputChange}
-                    placeholder="Associated deal"
-                  />
+                    className="input-field"
+                    disabled={dealsLoading}
+                  >
+                    <option value="">Select a deal (optional)</option>
+                    {dealsLoading ? (
+                      <option disabled>Loading deals...</option>
+                    ) : (
+                      deals.map(deal => (
+                        <option key={deal.Id} value={deal.Id}>
+                          {deal.title} - ${deal.value?.toLocaleString()}
+                        </option>
+                      ))
+                    )}
+                  </select>
                 </div>
 
                 <div>

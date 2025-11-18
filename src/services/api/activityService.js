@@ -31,6 +31,19 @@ async create(activityData) {
       timestamp: new Date().toISOString()
     }
     
+    // Handle lookup fields - support both ID-based and legacy text-based
+    if (activityData.contactId) {
+      newActivity.contactId = parseInt(activityData.contactId)
+      // Remove legacy text field if ID provided
+      delete newActivity.contactName
+    }
+    
+    if (activityData.dealId) {
+      newActivity.dealId = parseInt(activityData.dealId)
+      // Remove legacy text field if ID provided  
+      delete newActivity.dealName
+    }
+    
     // Handle task-specific fields
     if (activityData.type === 'Task') {
       newActivity.status = activityData.status || 'Pending'
@@ -53,9 +66,24 @@ async update(id, activityData) {
     const index = this.activities.findIndex(a => a.Id === parseInt(id))
     if (index === -1) return null
     
+    const updatedData = { ...activityData }
+    
+    // Handle lookup fields - support both ID-based and legacy text-based
+    if (activityData.contactId) {
+      updatedData.contactId = parseInt(activityData.contactId)
+      // Remove legacy text field if ID provided
+      delete updatedData.contactName
+    }
+    
+    if (activityData.dealId) {
+      updatedData.dealId = parseInt(activityData.dealId)
+      // Remove legacy text field if ID provided
+      delete updatedData.dealName
+    }
+    
     this.activities[index] = {
       ...this.activities[index],
-      ...activityData,
+      ...updatedData,
       Id: parseInt(id)
     }
     
