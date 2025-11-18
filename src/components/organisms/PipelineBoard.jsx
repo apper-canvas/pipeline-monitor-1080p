@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Badge from '@/components/atoms/Badge'
-import Loading from '@/components/ui/Loading'
-import ErrorView from '@/components/ui/ErrorView'
-import Empty from '@/components/ui/Empty'
-import ApperIcon from '@/components/ApperIcon'
-import dealService from '@/services/api/dealService'
-import contactService from '@/services/api/contactService'
-import { toast } from 'react-toastify'
-
-export default function PipelineBoard() {
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import dealService from "@/services/api/dealService";
+import contactService from "@/services/api/contactService";
+import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import ErrorView from "@/components/ui/ErrorView";
+import Badge from "@/components/atoms/Badge";
+export default function PipelineBoard({ onEditDeal }) {
   const [deals, setDeals] = useState([])
   const [contacts, setContacts] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [draggedDeal, setDraggedDeal] = useState(null)
-
   const stages = [
     { name: 'Lead', color: 'from-surface-400 to-surface-500' },
     { name: 'Qualified', color: 'from-blue-400 to-blue-500' },
@@ -178,7 +176,7 @@ export default function PipelineBoard() {
                     <p className="text-sm">No deals in {stage.name.toLowerCase()}</p>
                   </div>
                 ) : (
-                  stageDeals.map((deal, index) => {
+stageDeals.map((deal, index) => {
                     const contact = contacts[deal.contactId]
                     
                     return (
@@ -189,8 +187,20 @@ export default function PipelineBoard() {
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                         draggable
                         onDragStart={(e) => handleDragStart(e, deal)}
-                        className="card p-4 cursor-move hover:shadow-card-hover transition-shadow duration-200 bg-white border-l-4 border-l-primary-400"
+                        className="card p-4 cursor-move hover:shadow-card-hover transition-shadow duration-200 bg-white border-l-4 border-l-primary-400 relative group"
                       >
+                        {/* Edit Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onEditDeal?.(deal)
+                          }}
+                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 rounded-md hover:bg-surface-100 text-surface-500 hover:text-surface-700"
+                          title="Edit Deal"
+                        >
+                          <ApperIcon name="Edit" size={14} />
+                        </button>
+
                         <div className="space-y-3">
                           <div>
                             <h4 className="font-medium text-surface-900 text-sm mb-1 line-clamp-2">

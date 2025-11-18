@@ -12,7 +12,9 @@ import contactService from '@/services/api/contactService'
 
 export default function Pipeline() {
   const location = useLocation()
-  const [showCreateModal, setShowCreateModal] = useState(false)
+const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editDeal, setEditDeal] = useState(null)
   const [contacts, setContacts] = useState([])
   const [formData, setFormData] = useState({
     title: '',
@@ -44,7 +46,7 @@ export default function Pipeline() {
     }
   }, [location.state])
 
-  const handleCreateDeal = async (e) => {
+const handleCreateDeal = async (e) => {
     e.preventDefault()
     try {
       const dealData = {
@@ -72,6 +74,45 @@ export default function Pipeline() {
     }
   }
 
+  const handleEditDeal = async (e) => {
+    e.preventDefault()
+    try {
+      const dealData = {
+        ...formData,
+        contactId: formData.contactId ? parseInt(formData.contactId) : null,
+        value: parseFloat(formData.value) || 0,
+        probability: parseInt(formData.probability),
+      }
+
+      await dealService.update(editDeal.Id, dealData)
+      setShowEditModal(false)
+      setEditDeal(null)
+      setFormData({
+        title: '',
+        contactId: '',
+        value: '',
+        probability: '50',
+        expectedCloseDate: '',
+        description: ''
+      })
+      toast.success('Deal updated successfully')
+    } catch (err) {
+      toast.error('Failed to update deal')
+    }
+  }
+
+  const onEditDeal = (deal) => {
+    setEditDeal(deal)
+    setFormData({
+      title: deal.title || '',
+      contactId: deal.contactId?.toString() || '',
+      value: deal.value?.toString() || '',
+      probability: deal.probability?.toString() || '50',
+      expectedCloseDate: deal.expectedCloseDate || '',
+      description: deal.description || ''
+    })
+    setShowEditModal(true)
+  }
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -107,7 +148,7 @@ export default function Pipeline() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <PipelineBoard />
+<PipelineBoard onEditDeal={onEditDeal} />
         </motion.section>
 
         {/* Create Deal Modal */}
@@ -215,6 +256,125 @@ export default function Pipeline() {
                     </Button>
                     <Button type="submit">
                       Create Deal
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+)}
+
+        {/* Edit Deal Modal */}
+        {showEditModal && editDeal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-modal max-w-lg w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-surface-900">Edit Deal</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setShowEditModal(false)
+                      setEditDeal(null)
+                    }}
+                  >
+                    <ApperIcon name="X" size={16} />
+                  </Button>
+                </div>
+
+                <form onSubmit={handleEditDeal} className="space-y-4">
+                  <div>
+                    <Label htmlFor="edit-title">Deal Title</Label>
+                    <Input
+                      id="edit-title"
+                      required
+                      value={formData.title}
+                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="Enter deal title..."
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-contact">Contact</Label>
+                      <select
+                        id="edit-contact"
+                        value={formData.contactId}
+                        onChange={(e) => setFormData(prev => ({ ...prev, contactId: e.target.value }))}
+                        className="input-field"
+                      >
+                        <option value="">Select Contact</option>
+                        {contacts.map(contact => (
+                          <option key={contact.Id} value={contact.Id}>
+                            {contact.companyName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit-value">Deal Value</Label>
+                      <Input
+                        id="edit-value"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={formData.value}
+                        onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-probability">Probability (%)</Label>
+                      <Input
+                        id="edit-probability"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={formData.probability}
+                        onChange={(e) => setFormData(prev => ({ ...prev, probability: e.target.value }))}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit-expectedCloseDate">Expected Close Date</Label>
+                      <Input
+                        id="edit-expectedCloseDate"
+                        type="date"
+                        value={formData.expectedCloseDate}
+                        onChange={(e) => setFormData(prev => ({ ...prev, expectedCloseDate: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit-description">Description (Optional)</Label>
+                    <textarea
+                      id="edit-description"
+                      value={formData.description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      className="input-field min-h-[80px] resize-none"
+                      placeholder="Deal description..."
+                    />
+                  </div>
+
+                  <div className="flex justify-end space-x-3 pt-4 border-t border-surface-200">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => {
+                        setShowEditModal(false)
+                        setEditDeal(null)
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">
+                      Update Deal
                     </Button>
                   </div>
                 </form>
