@@ -1,0 +1,122 @@
+[
+  {
+    "Id": 1,
+    "companyName": "TechFlow Solutions",
+    "contactPerson": "Sarah Chen",
+    "email": "sarah.chen@techflow.com",
+    "phone": "+1 (555) 123-4567",
+    "industry": "Technology",
+    "companySize": "50-100",
+    "notes": "Enterprise customer interested in scaling their platform. Strong technical team with budget approved for Q1.",
+    "createdAt": "2024-01-15T09:30:00Z",
+    "lastActivity": "2024-01-28T14:20:00Z"
+  },
+  {
+    "Id": 2,
+    "companyName": "Global Dynamics Corp",
+    "contactPerson": "Michael Rodriguez",
+    "email": "m.rodriguez@globaldynamics.com",
+    "phone": "+1 (555) 234-5678",
+    "industry": "Manufacturing",
+    "companySize": "500+",
+    "notes": "Large manufacturing company looking to modernize their operations. Decision maker with immediate need.",
+    "createdAt": "2024-01-10T11:15:00Z",
+    "lastActivity": "2024-01-27T16:45:00Z"
+  },
+  {
+    "Id": 3,
+    "companyName": "StartupLab Inc",
+    "contactPerson": "Emily Watson",
+    "email": "emily@startuplab.io",
+    "phone": "+1 (555) 345-6789",
+    "industry": "Startups",
+    "companySize": "10-50",
+    "notes": "Fast-growing startup with recent Series A funding. Looking for scalable solutions to support their growth.",
+    "createdAt": "2024-01-20T08:00:00Z",
+    "lastActivity": "2024-01-29T10:30:00Z"
+  },
+  {
+    "Id": 4,
+    "companyName": "HealthFirst Medical",
+    "contactPerson": "Dr. James Kim",
+    "email": "j.kim@healthfirst.com",
+    "phone": "+1 (555) 456-7890",
+    "industry": "Healthcare",
+    "companySize": "100-500",
+    "notes": "Healthcare provider focused on patient experience improvements. Compliance requirements are critical.",
+    "createdAt": "2024-01-12T13:45:00Z",
+    "lastActivity": "2024-01-26T09:15:00Z"
+  },
+  {
+    "Id": 5,
+    "companyName": "EduTech Academy",
+    "contactPerson": "Lisa Park",
+    "email": "lisa.park@edutech.edu",
+    "phone": "+1 (555) 567-8901",
+    "industry": "Education",
+    "companySize": "100-500",
+    "notes": "Educational institution looking to enhance their digital learning platform. Budget cycle starts in March.",
+    "createdAt": "2024-01-18T15:20:00Z",
+    "lastActivity": "2024-01-25T12:00:00Z"
+  },
+  {
+    "Id": 6,
+    "companyName": "RetailMax Chain",
+    "contactPerson": "David Thompson",
+    "email": "d.thompson@retailmax.com",
+    "phone": "+1 (555) 678-9012",
+    "industry": "Retail",
+    "companySize": "500+",
+    "notes": "National retail chain interested in customer analytics platform. Multiple stakeholders involved in decision.",
+    "createdAt": "2024-01-08T10:30:00Z",
+    "lastActivity": "2024-01-24T17:20:00Z"
+  },
+  {
+    "Id": 7,
+    "companyName": "FinanceFirst Bank",
+    "contactPerson": "Rachel Martinez",
+    "email": "r.martinez@financefirst.com",
+    "phone": "+1 (555) 789-0123",
+    "industry": "Financial Services",
+    "companySize": "500+",
+    "notes": "Regional bank focused on digital transformation. Security and compliance are top priorities.",
+    "createdAt": "2024-01-22T14:10:00Z",
+    "lastActivity": "2024-01-30T11:45:00Z"
+  },
+  {
+    "Id": 8,
+    "companyName": "GreenEnergy Solutions",
+    "contactPerson": "Alex Johnson",
+    "email": "alex.johnson@greenenergy.com",
+    "phone": "+1 (555) 890-1234",
+    "industry": "Energy",
+    "companySize": "50-100",
+    "notes": "Sustainable energy company with growth plans. Looking for solutions to manage their expanding operations.",
+    "createdAt": "2024-01-14T12:25:00Z",
+    "lastActivity": "2024-01-23T15:50:00Z"
+  },
+  {
+    "Id": 9,
+    "companyName": "MediaWorks Studio",
+    "contactPerson": "Sophie Brown",
+    "email": "sophie.brown@mediaworks.com",
+    "phone": "+1 (555) 901-2345",
+    "industry": "Media & Entertainment",
+    "companySize": "10-50",
+    "notes": "Creative agency specializing in digital content. Interested in workflow optimization tools.",
+    "createdAt": "2024-01-16T16:40:00Z",
+    "lastActivity": "2024-01-22T13:30:00Z"
+  },
+  {
+    "Id": 10,
+    "companyName": "LogiTrans Freight",
+    "contactPerson": "Carlos Mendez",
+    "email": "carlos.mendez@logitrans.com",
+    "phone": "+1 (555) 012-3456",
+    "industry": "Logistics",
+    "companySize": "100-500",
+    "notes": "Logistics company needing better shipment tracking and customer communication tools. Time-sensitive implementation.",
+    "createdAt": "2024-01-11T09:55:00Z",
+    "lastActivity": "2024-01-21T14:15:00Z"
+  }
+]
