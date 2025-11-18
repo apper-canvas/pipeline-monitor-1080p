@@ -20,9 +20,9 @@ export default function Layout() {
     setShowQuickAddModal(true)
   }
 
-  const handleQuickAddContact = () => {
+const handleQuickAddContact = () => {
     setShowQuickAddModal(false)
-    navigate('/contacts')
+    navigate('/contacts?showCreateModal=true')
   }
 
   const handleQuickAddDeal = () => {
