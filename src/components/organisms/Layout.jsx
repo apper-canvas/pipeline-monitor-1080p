@@ -52,8 +52,8 @@ const handleQuickAddActivity = () => {
                 <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
                   <ApperIcon name="TrendingUp" className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-primary-900 bg-clip-text text-transparent">
-                  Pipeline Pro
+<h1 className="text-xl font-bold bg-gradient-to-r from-primary-700 to-primary-900 bg-clip-text text-transparent">
+                  Pipeline ProMax
                 </h1>
               </div>
             </div>
